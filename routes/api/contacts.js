@@ -1,25 +1,35 @@
-const express = require('express')
+import express from "express";
+import HttpError from "../../helpers/HttpError.js";
+import { contactAddSchema } from "../../schemas/contact-schema.js";
+import {
+  getContlorer,
+  getIdController,
+  postController,
+  deleteController,
+  putController,
+} from "../../controllers/contacts-controllers.js";
 
-const router = express.Router()
+export const contactsRouter = express.Router();
 
-router.get('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.get("/", getContlorer);
 
-router.get('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.get("/:contactId", getIdController);
 
-router.post('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.delete("/:contactId", deleteController);
 
-router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.use((req, _, next) => {
+  const { error } = contactAddSchema.validate(req.body);
+  if (error && req.method === "POST") {
+    throw HttpError(400, error.message);
+  }
+  if (req.method === "PUT") {
+    if (Object.entries(req.body).length === 0)
+      throw HttpError(400, "missing fields");
+    if (error) throw HttpError(400, error.message);
+  }
+  next();
+});
 
-router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+contactsRouter.post("/", postController);
 
-module.exports = router
+contactsRouter.put("/:contactId", putController);
