@@ -43,7 +43,7 @@ const putController = async (req, res) => {
   res.json(result);
 };
 
-const patchController = async (req, res) => {
+const updateStatusContact  = async (req, res) => {
   const { contactId } = req.params;
 
   const result = await Contact.findByIdAndUpdate(contactId, req.body, {
@@ -62,5 +62,5 @@ export default {
   postController: ctrlDecorator(postController),
   deleteController: ctrlDecorator(deleteController),
   putController: ctrlDecorator(putController),
-  patchController: ctrlDecorator(patchController),
+  updateStatusContact : ctrlDecorator(updateStatusContact ),
 };

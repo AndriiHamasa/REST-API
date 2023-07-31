@@ -18,4 +18,4 @@ contactsRouter.post("/", isEmptyBody, isValidatedbody(contactAddSchema), control
 
 contactsRouter.put("/:contactId", isValidId, isEmptyBody, isValidatedbody(contactAddSchema), controlers.putController);
 
-contactsRouter.patch("/:contactId/favorite", isValidId, isEmptyBody, isValidatedbody(contactUpdateFavoriteSchema), controlers.patchController);
+contactsRouter.patch("/:contactId/favorite", isValidId, isEmptyBody, isValidatedbody(contactUpdateFavoriteSchema), controlers.updateStatusContact );

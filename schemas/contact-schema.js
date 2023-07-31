@@ -8,6 +8,6 @@ export const contactAddSchema = Joi.object({
 });
 
 export const contactUpdateFavoriteSchema = Joi.object({
-  favorite: Joi.boolean().required().messages({ 'any.required': `missing required favorite field` })
+  favorite: Joi.boolean().required().messages({ 'any.required': `missing field favorite` })
 })
 
