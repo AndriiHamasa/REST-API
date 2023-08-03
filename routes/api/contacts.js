@@ -1,35 +1,21 @@
 import express from "express";
-import HttpError from "../../helpers/HttpError.js";
-import { contactAddSchema } from "../../schemas/contact-schema.js";
-import {
-  getContlorer,
-  getIdController,
-  postController,
-  deleteController,
-  putController,
-} from "../../controllers/contacts-controllers.js";
+import { contactAddSchema, contactUpdateFavoriteSchema } from "../../schemas/contact-schema.js";
+import {controlers} from "../../controllers/index.js"
+import isValidatedbody from "../../decorators/validate-body.js";
+import isEmptyBody from "../../middlewares/isEmptyBody.js";
+import isValidId from "../../middlewares/isValidId.js";
+
 
 export const contactsRouter = express.Router();
 
-contactsRouter.get("/", getContlorer);
+contactsRouter.get("/", controlers.getContlorer);
 
-contactsRouter.get("/:contactId", getIdController);
+contactsRouter.get("/:contactId", isValidId, controlers.getIdController);
 
-contactsRouter.delete("/:contactId", deleteController);
+contactsRouter.delete("/:contactId", isValidId, controlers.deleteController);
 
-contactsRouter.use((req, _, next) => {
-  const { error } = contactAddSchema.validate(req.body);
-  if (error && req.method === "POST") {
-    throw HttpError(400, error.message);
-  }
-  if (req.method === "PUT") {
-    if (Object.entries(req.body).length === 0)
-      throw HttpError(400, "missing fields");
-    if (error) throw HttpError(400, error.message);
-  }
-  next();
-});
+contactsRouter.post("/", isEmptyBody, isValidatedbody(contactAddSchema), controlers.postController);
 
-contactsRouter.post("/", postController);
+contactsRouter.put("/:contactId", isValidId, isEmptyBody, isValidatedbody(contactAddSchema), controlers.putController);
 
-contactsRouter.put("/:contactId", putController);
+contactsRouter.patch("/:contactId/favorite", isValidId, isEmptyBody, isValidatedbody(contactUpdateFavoriteSchema), controlers.updateStatusContact );

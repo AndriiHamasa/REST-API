@@ -1,64 +1,66 @@
-import {
-  listContacts,
-  getContactById,
-  addContact,
-  removeContact,
-  updateContact,
-} from "../models/contacts.js";
+import Contact from "../models/contact.js";
 import HttpError from "../helpers/HttpError.js";
+import ctrlDecorator from "../decorators/ctrl-decorator.js";
 
-export const getContlorer = async (req, res, next) => {
-  try {
-    const result = await listContacts();
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
+const getContlorer = async (req, res) => {
+  const result = await Contact.find({}, "-createdAt -updatedAt");
+  res.json(result);
 };
 
-export const getIdController = async (req, res, next) => {
-  try {
-    const result = await getContactById(req.params.contactId);
-    if (!result) {
-      throw HttpError(404);
-    }
-    res.json(result);
-  } catch (error) {
-    next(error);
+const getIdController = async (req, res) => {
+  const { contactId } = req.params;
+  const result = await Contact.findById(contactId);
+  if (!result) {
+    throw HttpError(404);
   }
+  res.json(result);
 };
 
-export const postController = async (req, res, next) => {
-  try {
-    const result = await addContact(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    next(error);
-  }
+const postController = async (req, res) => {
+  const result = await Contact.create(req.body);
+  res.status(201).json(result);
 };
 
-export const deleteController = async (req, res, next) => {
-  try {
-    const result = await removeContact(req.params.contactId);
-    if (!result) {
-      throw HttpError(404);
-    }
-    console.log("result with DELETING - ", result);
-    res.json({ message: "contact deleted" });
-  } catch (error) {
-    next(error);
+const deleteController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const result = await Contact.findByIdAndDelete(contactId);
+  if (!result) {
+    throw HttpError(404);
   }
+  res.json({ message: "contact deleted" });
 };
 
-export const putController = async (req, res, next) => {
-  try {
-    const result = await updateContact(req.params.contactId, req.body);
-    if (!result) {
-      throw HttpError(404);
-    }
+const putController = async (req, res) => {
+  const { contactId } = req.params;
 
-    res.json(result);
-  } catch (error) {
-    next(error);
+  const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
+  if (!result) {
+    throw HttpError(404);
   }
+
+  res.json(result);
+};
+
+const updateStatusContact  = async (req, res) => {
+  const { contactId } = req.params;
+
+  const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true
+  });
+  if (!result) {
+    throw HttpError(404);
+  }
+
+  res.json(result);
+};
+
+export default {
+  getContlorer: ctrlDecorator(getContlorer),
+  getIdController: ctrlDecorator(getIdController),
+  postController: ctrlDecorator(postController),
+  deleteController: ctrlDecorator(deleteController),
+  putController: ctrlDecorator(putController),
+  updateStatusContact : ctrlDecorator(updateStatusContact ),
 };
