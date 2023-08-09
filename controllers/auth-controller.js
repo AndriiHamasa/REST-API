@@ -25,7 +25,7 @@ const signin = async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) throw HttpError(401, "email or password is invalid");
 
-  const passwordCompare = bcrypt.compare(password, user.password);
+  const passwordCompare = await bcrypt.compare(password, user.password)
   if (!passwordCompare) throw HttpError(401, "email or error is invalid");
 
   const { JWT_SECRET } = process.env;
@@ -49,7 +49,7 @@ const signout = async (req, res) => {
   const { _id: id } = req.user
   await User.findByIdAndUpdate(id, { token: "no" })
   
-  res.status(204).json({message: "Logout success"})
+  res.status(204).send()
 }
 
 export default {
