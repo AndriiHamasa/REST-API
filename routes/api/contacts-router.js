@@ -2,11 +2,11 @@ import express from "express";
 import { contactAddSchema, contactUpdateFavoriteSchema } from "../../schemas/contact-schema.js";
 import {controlers} from "../../controllers/index.js"
 import isValidatedbody from "../../decorators/validate-body.js";
-import isEmptyBody from "../../middlewares/isEmptyBody.js";
-import isValidId from "../../middlewares/isValidId.js";
-
+import {authenticate, isEmptyBody, isValidId} from "../../middlewares/index.js";
 
 export const contactsRouter = express.Router();
+
+contactsRouter.use(authenticate)
 
 contactsRouter.get("/", controlers.getContlorer);
 

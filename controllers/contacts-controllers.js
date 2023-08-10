@@ -3,7 +3,11 @@ import HttpError from "../helpers/HttpError.js";
 import ctrlDecorator from "../decorators/ctrl-decorator.js";
 
 const getContlorer = async (req, res) => {
-  const result = await Contact.find({}, "-createdAt -updatedAt");
+  const { _id: owner } = req.user
+  console.log('req.query ==>> ', req.query)
+  const { page, limit } = req.query
+  const skip = (page - 1) * limit
+  const result = await Contact.find({owner}, "-createdAt -updatedAt", {skip, limit}).populate("owner", "name email");
   res.json(result);
 };
 
@@ -17,7 +21,8 @@ const getIdController = async (req, res) => {
 };
 
 const postController = async (req, res) => {
-  const result = await Contact.create(req.body);
+  const {_id: owner} = req.user
+  const result = await Contact.create({ ...req.body, owner });
   res.status(201).json(result);
 };
 
