@@ -7,7 +7,7 @@ import authController from "../../controllers/auth-controller.js";
 
 export const authRouter = express.Router()
 
-authRouter.post("/register", upload.single("avatar"), isValidatedbody(userSchemas.userSignupSchema), aythController.signup)
+authRouter.post("/register", isValidatedbody(userSchemas.userSignupSchema), upload.single("avatar"), aythController.signup)
 
 authRouter.post("/login", isValidatedbody(userSchemas.userSigninSchema), aythController.signin)
 
