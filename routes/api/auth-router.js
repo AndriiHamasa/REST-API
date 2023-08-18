@@ -9,6 +9,10 @@ export const authRouter = express.Router()
 
 authRouter.post("/register", isValidatedbody(userSchemas.userSignupSchema), upload.single("avatar"), aythController.signup)
 
+authRouter.get("/verify/:verificationToken", authController.verify)
+
+authRouter.post("/verify", isValidatedbody(userSchemas.userVerifySchema), authController.reverify)
+
 authRouter.post("/login", isValidatedbody(userSchemas.userSigninSchema), aythController.signin)
 
 authRouter.get("/current", authenticate, authController.getCurrent)
